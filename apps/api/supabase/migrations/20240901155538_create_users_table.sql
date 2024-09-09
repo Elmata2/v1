@@ -33,3 +33,17 @@ for select using (auth.uid() = id);
 -- create a policy to allow users to update their own profile
 create policy update_own_profile on public.users
 for update using (auth.uid() = id);
+
+-- Add new columns to the users table
+ALTER TABLE public.users
+ADD COLUMN bio TEXT,
+ADD COLUMN interests TEXT[];
+
+-- Update the policies to allow users to read and update these new fields
+DROP POLICY IF EXISTS select_own_profile ON public.users;
+CREATE POLICY select_own_profile ON public.users
+FOR SELECT USING (auth.uid() = id);
+
+DROP POLICY IF EXISTS update_own_profile ON public.users;
+CREATE POLICY update_own_profile ON public.users
+FOR UPDATE USING (auth.uid() = id);

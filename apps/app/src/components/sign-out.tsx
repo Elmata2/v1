@@ -3,6 +3,7 @@
 import { createClient } from "@v1/supabase/client";
 import { Button } from "@v1/ui/button";
 import { Icons } from "@v1/ui/icons";
+import React from "react";
 
 export function SignOut() {
   const supabase = createClient();
