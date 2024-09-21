@@ -2,30 +2,30 @@ import { useState } from "react";
 import { createClient } from "@v1/supabase/client";
 import { Button } from "@v1/ui/button";
 import { Input } from "@v1/ui/input";
-import React from "react";
 
 interface User {
   id: string;
   user_metadata: {
     full_name: string;
+    bio?: string;
+    interests?: string[];
   };
 }
 
 export function ProfileForm({ user }: { user: User }) {
-  const [fullName, setFullName] = useState(user?.user_metadata?.full_name || "");
-  const [bio, setBio] = useState("");
-  const [interests, setInterests] = useState("");
+  const [fullName, setFullName] = useState(user.user_metadata.full_name || "");
+  const [bio, setBio] = useState(user.user_metadata.bio || "");
+  const [interests, setInterests] = useState(user.user_metadata.interests?.join(", ") || "");
   const supabase = createClient();
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Use updateUser to update the user's full_name and metadata
       const { error } = await supabase.auth.updateUser({
         data: {
           full_name: fullName,
           bio,
-          interests,
+          interests: interests.split(",").map(interest => interest.trim()),
         },
       });
 
